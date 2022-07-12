@@ -1,0 +1,72 @@
+service: aws-fauna-workshop
+
+frameworkVersion: '2.72.3'
+
+
+# Specify donenv
+useDotenv: true
+
+# Add Fauna plugin
+plugins:
+  - serverless-dotenv-plugin
+  - serverless-fauna
+  - serverless-step-functions
+fauna:
+  client:
+    secret: ${env:FAUNA_ROOT_KEY}
+    domain: ${env:FAUNA_DOMAIN}
+  collections:
+    Vacation: 
+      name: Vacation
+
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  httpApi:
+    cors: true
+
+
+functions:
+  bookHotel:
+    handler: src/functions/bookHotel.handler
+  bookFlight:
+    handler: src/function/bookFlight.handler
+  cancelHotel:
+    handler: src/function/cancelHotel.handler
+  #   events:
+  #     - httpApi:
+  #         method: POST
+  #         path: /book-vacation
+
+	
+stepFunctions:
+  stateMachines:
+    bookVacationStepFunc:
+      events:
+        - http:
+            method: POST
+            path: /book-vacation
+      definition:
+        Comment: "A Hello World example of the Amazon States Language using an AWS Lambda Function"
+        StartAt: BookHotel
+        States:
+          BookHotel:
+            Type: Task
+            Resource:
+              Fn::GetAtt: [bookHotel, Arn]
+            Next: BookFlight
+          BookFlight:
+            Type: Task
+            Resource: 
+              Fn::GetAtt: [bookFlight, Arn]
+            End: true
+          # CancelHotel:
+          #   Type: Task
+          #   Resource: 
+          #     Fn::GetAtt: [bookFlight, Arn]
+          # END: true
+
+
+
+

@@ -1,0 +1,11 @@
+{
+  "dependencies": {
+    "@fauna-labs/serverless-fauna": "^0.1.4",
+    "faunadb": "^4.6.0",
+    "serverless-dotenv-plugin": "^4.0.1",
+    "serverless-step-functions": "^3.7.0"
+  },
+  "devDependencies": {
+    "serverless-fauna": "^0.1.0"
+  }
+}
