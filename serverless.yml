@@ -69,7 +69,3 @@ stepFunctions:
             Resource: 
               Fn::GetAtt: [cancelHotel, Arn]
             End: true
-
-
-
-
