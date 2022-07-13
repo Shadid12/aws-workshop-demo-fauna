@@ -12,22 +12,21 @@ const serverClient = new faunadb.Client({
 
 module.exports.handler = async (event, context) => {
   // Fake a delay for external API call
-  await new Promise(resolve => setTimeout(resolve, 10000));
+  // await new Promise(resolve => setTimeout(resolve, 10000));
 
-  console.log('====>>>IDDDD>>', event.Cause);
-
-  const updateBooking = await serverClient.query(
-    q.Update(
-      q.Ref(q.Collection('Vacation'), id),
-      { 
-        data: {
-          status: 'cancelled',
-        }
-      },
+  try {
+    await serverClient.query(
+      q.Update(
+        q.Ref(q.Collection('Vacation'), JSON.parse(event.Cause).errorMessage),
+        { 
+          data: {
+            status: 'cancelled',
+          }
+        },
+      )
     )
-  )
-  return {
-    statusCode: 200,
-    updateBooking
-  };
+    return { statusCode: 200 };
+  } catch (error) {
+    throw new Error(error);
+  }
 };
