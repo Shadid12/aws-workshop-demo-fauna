@@ -31,9 +31,9 @@ functions:
   bookHotel:
     handler: src/functions/bookHotel.handler
   bookFlight:
-    handler: src/function/bookFlight.handler
+    handler: src/functions/bookFlight.handler
   cancelHotel:
-    handler: src/function/cancelHotel.handler
+    handler: src/functions/cancelHotel.handler
   #   events:
   #     - httpApi:
   #         method: POST
@@ -60,12 +60,15 @@ stepFunctions:
             Type: Task
             Resource: 
               Fn::GetAtt: [bookFlight, Arn]
+            Catch:
+            - ErrorEquals: ["States.TaskFailed"]
+              Next: CancelHotel
             End: true
-          # CancelHotel:
-          #   Type: Task
-          #   Resource: 
-          #     Fn::GetAtt: [bookFlight, Arn]
-          # END: true
+          CancelHotel:
+            Type: Task
+            Resource: 
+              Fn::GetAtt: [cancelHotel, Arn]
+            End: true
 
 
 
