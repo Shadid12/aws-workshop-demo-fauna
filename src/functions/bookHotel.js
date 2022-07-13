@@ -32,18 +32,24 @@ module.exports.handler = async (event, context) => {
     console.log('newBooking', JSON.stringify(newBooking));
 
     // Fake a delay for external API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-
-    // const updateBooking = await serverClient.query(
-    //   q.Update(
-    //     q.Ref(q.Collection('Vacation'), newBooking.id),
-    //     { data },
-    //   )
-    // )
+    await new Promise(resolve => setTimeout(resolve, 4000));
+    const updateBooking = await serverClient.query(
+      q.Update(
+        q.Ref(q.Collection('Vacation'), newBooking['ref'].id),
+        { 
+          data: {
+            status: 'confirmed',
+          }
+        },
+      )
+    )
 
     return {
       statusCode: 200,
-      newBooking,
+      reservation: {
+        id: newBooking['ref'].id,
+        data: updateBooking.data
+      },
       flightId: event.flightId
     };
   } catch (error) {
