@@ -18,6 +18,15 @@ fauna:
   collections:
     Vacation: 
       name: Vacation
+  indexes:
+    vacations_by_userId:
+      name: vacations_by_userId
+      source: Vacation
+      terms:
+        fields:
+          - data.userId
+
+
 
 
 provider:
@@ -47,6 +56,7 @@ stepFunctions:
         - http:
             method: POST
             path: /book-vacation
+            cors: true
       definition:
         Comment: "A Hello World example of the Amazon States Language using an AWS Lambda Function"
         StartAt: BookHotel

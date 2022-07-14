@@ -11,9 +11,6 @@ const serverClient = new faunadb.Client({
 });
 
 module.exports.handler = async (event, context) => {
-  
-  console.log('bookHotel', JSON.stringify(event, null, 2));
-  
 
   try {
     const newBooking = await serverClient.query(
